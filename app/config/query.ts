@@ -4,8 +4,8 @@ const runtimeConfig = useRuntimeConfig();
 export const ALCHEMY_KEY = runtimeConfig.public.alchemyKey;
 
 export const graphHost = "https://subgraph.satsuma-prod.com";
-// export const graphToken = runtimeConfig.public.graphToken;
-export const graphToken = runtimeConfig.graphToken;
+export const graphToken = runtimeConfig.public.graphToken;
+// export const graphToken = runtimeConfig.graphToken;
 
 export const graphName = "my-m0token-transfers";
 export const graphVersion = "v0.0.1-new-version";
