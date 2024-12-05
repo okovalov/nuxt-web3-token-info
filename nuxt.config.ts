@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
   },
   runtimeConfig: {
+    graphToken: process.env.GRAPH_TOKEN ?? "graphToken_server",
     public: {
       alchemyKey: process.env.ALCHEMY_KEY ?? "alchemyKey_na",
       graphToken: process.env.GRAPH_TOKEN ?? "graphToken_na",
