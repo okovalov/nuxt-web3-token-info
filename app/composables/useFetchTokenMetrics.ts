@@ -20,33 +20,76 @@ export const useFetchTokenMetrics = (
   const fetchMetrics = async () => {
     pending.value = true;
 
-    const totalSupply = await readContract(config, {
-      abi,
-      address: contractAddress.value,
-      functionName: "totalSupply",
-    });
+    let totalSupply;
 
-    const totalEarningSupply = await readContract(config, {
-      abi,
-      address: contractAddress.value,
-      functionName: "totalEarningSupply",
-    });
+    try {
+      totalSupply = await readContract(config, {
+        abi,
+        address: contractAddress.value,
+        functionName: "totalSupply",
+      });
+    } catch (error) {
+      console.log(
+        "error while trying to call totalSupply on a readContract",
+        error,
+      );
+    }
 
-    const contractSymbol = await readContract(config, {
-      abi,
-      address: contractAddress.value,
-      functionName: "symbol",
-    });
+    let totalEarningSupply;
 
-    const earnerRate = await readContract(config, {
-      abi,
-      address: contractAddress.value,
-      functionName: "earnerRate",
-    });
+    try {
+      totalEarningSupply = await readContract(config, {
+        abi,
+        address: contractAddress.value,
+        functionName: "totalEarningSupply",
+      });
+    } catch (error) {
+      console.log(
+        "error while trying to call totalEarningSupply on a readContract",
+        error,
+      );
+    }
 
-    const balance = await getBalance(config, {
-      address: contractAddress.value,
-    });
+    let contractSymbol;
+
+    try {
+      contractSymbol = await readContract(config, {
+        abi,
+        address: contractAddress.value,
+        functionName: "symbol",
+      });
+    } catch (error) {
+      console.log("error while trying to call symbol on a readContract", error);
+    }
+
+    let earnerRate;
+
+    try {
+      earnerRate = await readContract(config, {
+        abi,
+        address: contractAddress.value,
+        functionName: "earnerRate",
+      });
+    } catch (error) {
+      console.log(
+        "error while trying to call earnerRate on a readContract",
+        error,
+      );
+    }
+
+    // Disabling it for now, as my free tier causes cloudfront.eth treshold very often to happen :(
+    // let balance;
+    //
+    // try {
+    //   balance = await getBalance(config, {
+    //     address: contractAddress.value,
+    //   });
+    // } catch (error) {
+    //   console.log(
+    //     "error while trying to call balance on a readContract",
+    //     error,
+    //   );
+    // }
 
     pending.value = false;
 
@@ -55,24 +98,18 @@ export const useFetchTokenMetrics = (
       totalEarningSupply,
       contractSymbol,
       earnerRate,
-      balance,
+      // balance,
     };
   };
 
   const refresh = async () => {
-    const {
-      totalSupply,
-      totalEarningSupply,
-      contractSymbol,
-      earnerRate,
-      balance,
-    } = await fetchMetrics();
+    const { totalSupply, totalEarningSupply, contractSymbol, earnerRate } =
+      await fetchMetrics();
 
-    metrics.totalSupply = totalSupply;
-    metrics.totalEarningSupply = totalEarningSupply;
-    metrics.contractSymbol = contractSymbol;
-    metrics.earnerRate = earnerRate;
-    metrics.balance = balance;
+    metrics.totalSupply = totalSupply || 10000000000n;
+    metrics.totalEarningSupply = totalEarningSupply || 20000000000n;
+    metrics.contractSymbol = contractSymbol || "M";
+    metrics.earnerRate = earnerRate || 480;
   };
 
   watch(contractAddress, async () => await refresh());
